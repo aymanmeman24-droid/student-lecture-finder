@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Lecture Finder</title>
+
+    <link rel="stylesheet" href="/style.css">
+
+    <style>
+
+        /* =====================================
+           MODERN HOME PAGE
+        ===================================== */
+
+        .home-page {
+            min-height: calc(100vh - 90px);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 30px 15px;
+        }
+
+
+        .home-container {
+            width: 100%;
+            max-width: 1050px;
+
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+
+            gap: 45px;
+
+            align-items: center;
+        }
+
+
+        /* LEFT SIDE */
+
+        .hero-content {
+            padding: 20px;
+        }
+
+
+        .hero-badge {
+            display: inline-block;
+
+            padding: 8px 14px;
+
+            background: #eef2ff;
+            color: #4f46e5;
+
+            border: 1px solid #c7d2fe;
+
+            border-radius: 30px;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            margin-bottom: 18px;
+        }
+
+
+        .hero-content h2 {
+            font-size: clamp(38px, 5vw, 58px);
+
+            line-height: 1.05;
+
+            color: #172554;
+
+            margin-bottom: 18px;
+
+            letter-spacing: -2px;
+        }
+
+
+        .hero-content h2 span {
+            color: #4f46e5;
+        }
+
+
+        .hero-content .hero-text {
+            color: #64748b;
+
+            font-size: 17px;
+
+            line-height: 1.7;
+
+            max-width: 520px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .feature-list {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+        }
+
+
+        .feature-item {
+            background: white;
+
+            border: 1px solid #e2e8f0;
+
+            padding: 9px 13px;
+
+            border-radius: 12px;
+
+            color: #475569;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            box-shadow:
+                0 4px 12px rgba(30, 41, 59, 0.05);
+        }
+
+
+        /* RIGHT SIDE */
+
+        .enrollment-card {
+            background: rgba(255,255,255,0.96);
+
+            padding: 35px;
+
+            border-radius: 26px;
+
+            border: 1px solid #e2e8f0;
+
+            box-shadow:
+                0 20px 55px rgba(79,70,229,0.13);
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+
+        .enrollment-card::before {
+            content: "";
+
+            position: absolute;
+
+            width: 180px;
+            height: 180px;
+
+            background: #eef2ff;
+
+            border-radius: 50%;
+
+            top: -90px;
+            right: -70px;
+
+            z-index: 0;
+        }
+
+
+        .card-content {
+            position: relative;
+
+            z-index: 1;
+        }
+
+
+        .card-icon {
+            width: 52px;
+            height: 52px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #6366f1
+                );
+
+            color: white;
+
+            border-radius: 15px;
+
+            font-size: 23px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .enrollment-card h3 {
+            color: #172554;
+
+            font-size: 25px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .enrollment-card .card-subtitle {
+            color: #64748b;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+
+            margin-bottom: 25px;
+        }
+
+
+        .input-label {
+            display: block;
+
+            text-align: left;
+
+            color: #334155;
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            margin-bottom: 8px;
+        }
+
+
+        .modern-input {
+            width: 100%;
+
+            padding: 15px 16px;
+
+            border-radius: 13px;
+
+            border: 1px solid #cbd5e1;
+
+            background: #f8fafc;
+
+            font-size: 15px;
+
+            outline: none;
+
+            transition: 0.25s;
+
+            margin-bottom: 15px;
+        }
+
+
+        .modern-input:focus {
+            border-color: #6366f1;
+
+            background: white;
+
+            box-shadow:
+                0 0 0 4px rgba(99,102,241,0.10);
+        }
+
+
+        .find-btn {
+            width: 100%;
+
+            padding: 15px;
+
+            border: none;
+
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #6366f1
+                );
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 8px 22px rgba(79,70,229,0.25);
+
+            transition: 0.25s;
+        }
+
+
+        .find-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 28px rgba(79,70,229,0.30);
+        }
+
+
+        .card-note {
+            text-align: center;
+
+            color: #94a3b8;
+
+            font-size: 12px;
+
+            margin-top: 16px;
+        }
+
+
+        /* =====================================
+           MOBILE
+        ===================================== */
+
+        @media (max-width: 800px) {
+
+            .home-page {
+                padding: 25px 12px;
+            }
+
+
+            .home-container {
+                grid-template-columns: 1fr;
+
+                gap: 25px;
+            }
+
+
+            .hero-content {
+                text-align: center;
+
+                padding: 10px;
+            }
+
+
+            .hero-content h2 {
+                font-size: 40px;
+
+                letter-spacing: -1px;
+            }
+
+
+            .hero-content .hero-text {
+                margin-left: auto;
+                margin-right: auto;
+
+                font-size: 15px;
+            }
+
+
+            .feature-list {
+                justify-content: center;
+            }
+
+
+            .enrollment-card {
+                max-width: 520px;
+
+                width: 100%;
+
+                margin: auto;
+            }
+
+        }
+
+
+        @media (max-width: 450px) {
+
+            .hero-content h2 {
+                font-size: 34px;
+            }
+
+
+            .hero-content .hero-text {
+                font-size: 14px;
+            }
+
+
+            .enrollment-card {
+                padding: 25px 20px;
+
+                border-radius: 21px;
+            }
+
+
+            .enrollment-card h3 {
+                font-size: 22px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <header>
+
+        <div>
+            <h1>🎓 Student Lecture Finder</h1>
+            <p>Find your lecture instantly</p>
+        </div>
+
+    </header>
+
+
+    <main class="home-page">
+
+        <div class="home-container">
+
+
+            <!-- ==============================
+                 LEFT HERO
+            =============================== -->
+
+            <section class="hero-content">
+
+                <div class="hero-badge">
+                    🎓 GEC PALANPUR
+                </div>
+
+
+                <h2>
+                    Find Your
+                    <span>Lecture.</span>
+                </h2>
+
+
+                <p class="hero-text">
+
+                    Enter your enrollment number and
+                    quickly find your today's lecture,
+                    classroom, professor and complete
+                    timetable.
+
+                </p>
+
+
+                <div class="feature-list">
+
+                    <div class="feature-item">
+                        📚 Today's Lectures
+                    </div>
+
+                    <div class="feature-item">
+                        🗓️ Full Timetable
+                    </div>
+
+                    <div class="feature-item">
+                        👨‍🏫 Professor Details
+                    </div>
+
+                    <div class="feature-item">
+                        🏫 Classroom Details
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ==============================
+                 ENROLLMENT CARD
+            =============================== -->
+
+            <section class="enrollment-card">
+
+                <div class="card-content">
+
+                    <div class="card-icon">
+                        🔍
+                    </div>
+
+
+                    <h3>
+                        Find Your Lectures
+                    </h3>
+
+
+                    <p class="card-subtitle">
+
+                        Enter your enrollment number
+                        to access your lecture dashboard.
+
+                    </p>
+
+
+                    <label
+                        class="input-label"
+                        for="enrollmentInput">
+
+                        Enrollment Number
+
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="enrollmentInput"
+                        class="modern-input"
+                        placeholder="e.g. CE01"
+                        maxlength="10"
+                    >
+
+
+                    <button
+                        class="find-btn"
+                        onclick="findLectures()">
+
+                        🔍 Find My Lectures
+
+                    </button>
+
+
+                    <p
+                        id="message"
+                        aria-live="polite">
+                    </p>
+
+
+                    <p class="card-note">
+
+                        Your timetable will appear
+                        instantly after searching.
+
+                    </p>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+    <!-- Existing functionality stays exactly the same -->
+
+    <script src="/script.js"></script>
+
+</body>
+
+</html>

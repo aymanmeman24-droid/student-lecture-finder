@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Full Timetable 📚</title>
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+<div class="page-container">
+
+    <!-- Header -->
+    <div class="simple-page-header">
+
+        <a href="/today.html" class="back-btn">
+            ← Back to Today
+        </a>
+
+        <h1>📚 Full Timetable</h1>
+
+        <p>
+            Complete weekly lecture schedule
+        </p>
+
+    </div>
+
+
+    <!-- Student -->
+    <div class="enrollment-info">
+        🎓 Enrollment:
+        <strong id="studentEnrollment">Loading...</strong>
+    </div>
+
+
+    <!-- Timetable -->
+    <div id="timetableContainer">
+
+        <div class="loading-box">
+            ⏳ Loading timetable...
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const enrollment = localStorage.getItem("enrollment");
+
+const container =
+    document.getElementById("timetableContainer");
+
+const studentEnrollment =
+    document.getElementById("studentEnrollment");
+
+
+const days = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+];
+
+
+// -------------------------------
+// Convert time into minutes
+// -------------------------------
+
+function convertTime(time) {
+
+    if (!time) return 0;
+
+    let value = time.toString()
+        .trim()
+        .toUpperCase();
+
+    let match =
+        value.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/);
+
+    if (!match) return 0;
+
+    let hour = parseInt(match[1]);
+    let minute = parseInt(match[2]);
+    let period = match[3];
+
+    if (period === "PM" && hour !== 12) {
+        hour += 12;
+    }
+
+    if (period === "AM" && hour === 12) {
+        hour = 0;
+    }
+
+    return hour * 60 + minute;
+}
+
+
+// -------------------------------
+// Format time
+// -------------------------------
+
+function formatTime(time) {
+
+    if (!time) return "";
+
+    let value = time.toString()
+        .trim()
+        .toUpperCase();
+
+    let match =
+        value.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/);
+
+    if (!match) return time;
+
+    let hour = parseInt(match[1]);
+    let minute = match[2];
+    let period = match[3];
+
+    if (!period) {
+
+        period =
+            hour >= 12 ? "PM" : "AM";
+
+        if (hour === 0) {
+            hour = 12;
+        }
+        else if (hour > 12) {
+            hour -= 12;
+        }
+    }
+
+    return `${hour}:${minute} ${period}`;
+}
+
+
+// -------------------------------
+// No enrollment
+// -------------------------------
+
+if (!enrollment) {
+
+    container.innerHTML = `
+
+        <div class="empty-box">
+
+            <h2>⚠️ Enrollment Number Missing</h2>
+
+            <p>
+                Please enter your enrollment number first.
+            </p>
+
+            <a href="/" class="primary-btn">
+                Go to Home
+            </a>
+
+        </div>
+
+    `;
+
+}
+
+
+// -------------------------------
+// Load timetable
+// -------------------------------
+
+else {
+
+    studentEnrollment.textContent = enrollment;
+
+    fetch(`/api/lectures/${enrollment}`)
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            if (!data.success) {
+
+                container.innerHTML = `
+
+                    <div class="empty-box">
+
+                        <h2>❌ Student Not Found</h2>
+
+                        <p>
+                            ${data.message}
+                        </p>
+
+                    </div>
+
+                `;
+
+                return;
+            }
+
+
+            const lectures =
+                data.lectures || [];
+
+            container.innerHTML = "";
+
+
+            // -------------------------------
+            // Every day
+            // -------------------------------
+
+            days.forEach(day => {
+
+
+                // Get lectures of this day
+                const dayLectures = lectures
+
+                    .filter(
+                        lecture =>
+                            lecture.day === day
+                    )
+
+                    // IMPORTANT:
+                    // Sort according to time
+                    .sort(
+                        (a, b) =>
+                            convertTime(a.start_time)
+                            -
+                            convertTime(b.start_time)
+                    );
+
+
+                // -------------------------------
+                // Day heading
+                // -------------------------------
+
+                const daySection =
+                    document.createElement("div");
+
+                daySection.className =
+                    "timetable-section";
+
+
+                daySection.innerHTML = `
+
+                    <div class="timetable-day-title">
+
+                        <h2>
+                            📅 ${day}
+                        </h2>
+
+                    </div>
+
+                `;
+
+
+                // -------------------------------
+                // No lecture
+                // -------------------------------
+
+                if (dayLectures.length === 0) {
+
+                    daySection.innerHTML += `
+
+                        <div class="no-lecture-card">
+
+                            💤 No lectures scheduled
+
+                        </div>
+
+                    `;
+
+                }
+
+
+                // -------------------------------
+                // Lecture cards
+                // -------------------------------
+
+                else {
+
+                    dayLectures.forEach(
+                        lecture => {
+
+                            const card =
+                                document.createElement("div");
+
+                            card.className =
+                                "lecture-card";
+
+
+                            card.innerHTML = `
+
+                                <div class="lecture-time">
+
+                                    ⏰
+
+                                    <strong>
+                                        ${formatTime(
+                                            lecture.start_time
+                                        )}
+                                        -
+                                        ${formatTime(
+                                            lecture.end_time
+                                        )}
+                                    </strong>
+
+                                </div>
+
+
+                                <h3>
+                                    📚 ${lecture.subject}
+                                </h3>
+
+
+                                <div class="lecture-info">
+
+                                    <span>
+                                        🏫 ${lecture.room}
+                                    </span>
+
+                                    <span>
+                                        👨‍🏫 ${lecture.professor}
+                                    </span>
+
+                                </div>
+
+                            `;
+
+
+                            daySection.appendChild(card);
+
+                        }
+                    );
+
+                }
+
+
+                container.appendChild(daySection);
+
+            });
+
+        })
+
+
+        .catch(error => {
+
+            console.error(error);
+
+            container.innerHTML = `
+
+                <div class="empty-box">
+
+                    <h2>
+                        ⚠️ Something went wrong
+                    </h2>
+
+                    <p>
+                        Unable to load timetable.
+                    </p>
+
+                </div>
+
+            `;
+
+        });
+
+}
+
+</script>
+
+</body>
+</html>

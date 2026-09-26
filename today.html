@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Today's Lectures 📚</title>
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+<div class="page-container">
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="today-header">
+
+        <div>
+            <h1>Today's Lectures 📚</h1>
+
+            <p id="todayDate">
+                Loading date...
+            </p>
+        </div>
+
+        <button
+            class="change-enrollment-btn"
+            onclick="changeEnrollment()">
+
+            🔄 Change Enrollment
+
+        </button>
+
+    </div>
+
+
+    <!-- ================= NAVIGATION ================= -->
+
+    <div class="day-navigation">
+
+        <a href="/yesterday.html" class="day-nav-card">
+            ← Yesterday
+        </a>
+
+        <a href="/timetable.html" class="day-nav-card">
+            📚 Full Timetable
+        </a>
+
+        <a href="/tomorrow.html" class="day-nav-card">
+            Tomorrow →
+        </a>
+
+    </div>
+
+
+    <!-- ================= STUDENT ================= -->
+
+    <div class="enrollment-info">
+
+        🎓 Enrollment:
+
+        <strong id="studentEnrollment">
+            Loading...
+        </strong>
+
+    </div>
+
+
+    <!-- ================= SUMMARY ================= -->
+
+    <div class="summary-row">
+
+        <!-- LIVE -->
+
+        <div class="summary-card live-summary">
+
+            <span>🔴</span>
+
+            <div>
+
+                <strong id="liveLecture">
+                    No
+                </strong>
+
+                <small>LIVE NOW</small>
+
+            </div>
+
+        </div>
+
+
+        <!-- NEXT -->
+
+        <div class="summary-card next-summary">
+
+            <span>⭐</span>
+
+            <div>
+
+                <strong id="nextLecture">
+                    --
+                </strong>
+
+                <small>NEXT LECTURE</small>
+
+            </div>
+
+        </div>
+
+
+        <!-- TOTAL -->
+
+        <div class="summary-card">
+
+            <span>📚</span>
+
+            <div>
+
+                <strong id="totalLectures">
+                    0
+                </strong>
+
+                <small>TOTAL LECTURES</small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= LIVE LECTURE ================= -->
+
+    <div id="liveLectureBox"></div>
+
+
+    <!-- ================= LECTURES ================= -->
+
+    <div id="lectureContainer">
+
+        <div class="loading-box">
+
+            ⏳ Loading today's lectures...
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   BASIC ELEMENTS
+===================================================== */
+
+const enrollment =
+    localStorage.getItem("enrollment");
+
+
+const lectureContainer =
+    document.getElementById("lectureContainer");
+
+
+const studentEnrollment =
+    document.getElementById("studentEnrollment");
+
+
+const totalLectures =
+    document.getElementById("totalLectures");
+
+
+const nextLecture =
+    document.getElementById("nextLecture");
+
+
+const liveLecture =
+    document.getElementById("liveLecture");
+
+
+const liveLectureBox =
+    document.getElementById("liveLectureBox");
+
+
+const todayDate =
+    document.getElementById("todayDate");
+
+
+/* =====================================================
+   CHANGE ENROLLMENT
+===================================================== */
+
+function changeEnrollment() {
+
+    localStorage.removeItem("enrollment");
+
+    window.location.href = "/";
+
+}
+
+
+/* =====================================================
+   TODAY DATE
+===================================================== */
+
+const today = new Date();
+
+
+const dateOptions = {
+
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+
+};
+
+
+todayDate.textContent =
+    today.toLocaleDateString(
+        "en-IN",
+        dateOptions
+    );
+
+
+/* =====================================================
+   CHECK ENROLLMENT
+===================================================== */
+
+if (!enrollment) {
+
+    lectureContainer.innerHTML = `
+
+        <div class="empty-box">
+
+            <h2>
+                ⚠️ Enrollment Number Missing
+            </h2>
+
+            <p>
+                Please enter your enrollment number first.
+            </p>
+
+            <a href="/" class="primary-btn">
+                Go to Home
+            </a>
+
+        </div>
+
+    `;
+
+}
+
+else {
+
+    studentEnrollment.textContent =
+        enrollment;
+
+    loadTodayLectures();
+
+}
+
+
+/* =====================================================
+   LOAD TODAY LECTURES
+===================================================== */
+
+function loadTodayLectures() {
+
+    fetch(`/api/lectures/${enrollment}`)
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            if (!data.success) {
+
+                lectureContainer.innerHTML = `
+
+                    <div class="empty-box">
+
+                        <h2>
+                            ❌ Student Not Found
+                        </h2>
+
+                        <p>
+                            ${data.message}
+                        </p>
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+            const lectures =
+                data.lectures || [];
+
+
+            /* ===============================
+               TODAY DAY
+            =============================== */
+
+            const todayName =
+                today.toLocaleDateString(
+                    "en-IN",
+                    {
+                        weekday: "long"
+                    }
+                );
+
+
+            /* ===============================
+               FILTER + SORT
+            =============================== */
+
+            const todayLectures =
+
+                lectures
+
+                    .filter(
+                        lecture =>
+                            lecture.day === todayName
+                    )
+
+                    .sort(
+                        (a, b) =>
+                            convertTime(a.start_time)
+                            -
+                            convertTime(b.start_time)
+                    );
+
+
+            /* ===============================
+               TOTAL
+            =============================== */
+
+            totalLectures.textContent =
+                todayLectures.length;
+
+
+            /* ===============================
+               NO LECTURES
+            =============================== */
+
+            if (todayLectures.length === 0) {
+
+                liveLecture.textContent =
+                    "No";
+
+                nextLecture.textContent =
+                    "None";
+
+
+                liveLectureBox.innerHTML = `
+
+                    <div class="live-empty-box">
+
+                        😴 No lecture is live right now.
+
+                    </div>
+
+                `;
+
+
+                lectureContainer.innerHTML = `
+
+                    <div class="empty-box">
+
+                        <div style="font-size:40px;">
+                            💤
+                        </div>
+
+                        <h2>
+                            No Lectures Today
+                        </h2>
+
+                        <p>
+                            There are no lectures scheduled
+                            for ${todayName}.
+                        </p>
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+            /* ===============================
+               CURRENT TIME
+            =============================== */
+
+            const now =
+                new Date();
+
+
+            const currentMinutes =
+                now.getHours() * 60
+                +
+                now.getMinutes();
+
+
+            /* ===============================
+               FIND LIVE
+            =============================== */
+
+            let liveIndex = -1;
+
+
+            for (
+                let i = 0;
+                i < todayLectures.length;
+                i++
+            ) {
+
+                const start =
+                    convertTime(
+                        todayLectures[i].start_time
+                    );
+
+
+                const end =
+                    convertTime(
+                        todayLectures[i].end_time
+                    );
+
+
+                if (
+                    currentMinutes >= start &&
+                    currentMinutes < end
+                ) {
+
+                    liveIndex = i;
+
+                    break;
+
+                }
+
+            }
+
+
+            /* ===============================
+               FIND NEXT
+            =============================== */
+
+            let nextIndex = -1;
+
+
+            for (
+                let i = 0;
+                i < todayLectures.length;
+                i++
+            ) {
+
+                const start =
+                    convertTime(
+                        todayLectures[i].start_time
+                    );
+
+
+                if (
+                    start > currentMinutes
+                ) {
+
+                    nextIndex = i;
+
+                    break;
+
+                }
+
+            }
+
+
+            /* ===============================
+               LIVE SUMMARY
+            =============================== */
+
+            if (liveIndex !== -1) {
+
+                const live =
+                    todayLectures[liveIndex];
+
+
+                liveLecture.textContent =
+                    live.subject;
+
+            }
+
+            else {
+
+                liveLecture.textContent =
+                    "No";
+
+            }
+
+
+            /* ===============================
+               NEXT SUMMARY
+            =============================== */
+
+            if (nextIndex !== -1) {
+
+                nextLecture.textContent =
+                    todayLectures[nextIndex].subject;
+
+            }
+
+            else {
+
+                nextLecture.textContent =
+                    "None";
+
+            }
+
+
+            /* ===============================
+               LIVE LECTURE BOX
+            =============================== */
+
+            if (liveIndex !== -1) {
+
+                const live =
+                    todayLectures[liveIndex];
+
+
+                liveLectureBox.innerHTML = `
+
+                    <div class="live-lecture-box">
+
+                        <div class="live-box-title">
+
+                            🔴 LIVE NOW
+
+                        </div>
+
+
+                        <h2>
+
+                            📚 ${live.subject}
+
+                        </h2>
+
+
+                        <div class="live-info">
+
+                            <span>
+                                🏫 ${live.room}
+                            </span>
+
+                            <span>
+                                👨‍🏫 ${live.professor}
+                            </span>
+
+                            <span>
+                                ⏰
+                                ${formatTime(live.start_time)}
+                                -
+                                ${formatTime(live.end_time)}
+                            </span>
+
+                        </div>
+
+
+                        <div class="live-message">
+
+                            🟢 This lecture is happening now.
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+
+            else {
+
+                liveLectureBox.innerHTML = `
+
+                    <div class="live-empty-box">
+
+                        ⚪ No lecture is live right now.
+
+                    </div>
+
+                `;
+
+            }
+
+
+            /* ===============================
+               RENDER ALL LECTURES
+            =============================== */
+
+            lectureContainer.innerHTML = "";
+
+
+            todayLectures.forEach(
+                (lecture, index) => {
+
+
+                    const card =
+                        document.createElement("div");
+
+
+                    card.className =
+                        "lecture-card";
+
+
+                    const startMinutes =
+                        convertTime(
+                            lecture.start_time
+                        );
+
+
+                    const endMinutes =
+                        convertTime(
+                            lecture.end_time
+                        );
+
+
+                    let status = "";
+
+                    let statusClass = "";
+
+
+                    /* LIVE */
+
+                    if (
+                        currentMinutes >= startMinutes
+                        &&
+                        currentMinutes < endMinutes
+                    ) {
+
+                        status =
+                            "🔴 LIVE NOW";
+
+                        statusClass =
+                            "live";
+
+                    }
+
+
+                    /* NEXT */
+
+                    else if (
+                        index === nextIndex
+                    ) {
+
+                        status =
+                            "⭐ NEXT LECTURE";
+
+                        statusClass =
+                            "next";
+
+                    }
+
+
+                    /* UPCOMING */
+
+                    else if (
+                        currentMinutes < startMinutes
+                    ) {
+
+                        status =
+                            "🔵 UPCOMING";
+
+                        statusClass =
+                            "upcoming";
+
+                    }
+
+
+                    /* COMPLETED */
+
+                    else {
+
+                        status =
+                            "✓ COMPLETED";
+
+                        statusClass =
+                            "completed";
+
+                    }
+
+
+                    card.innerHTML = `
+
+                        <div class="lecture-status ${statusClass}">
+
+                            ${status}
+
+                        </div>
+
+
+                        <div class="lecture-time">
+
+                            ⏰
+
+                            <strong>
+
+                                ${formatTime(
+                                    lecture.start_time
+                                )}
+
+                                -
+
+                                ${formatTime(
+                                    lecture.end_time
+                                )}
+
+                            </strong>
+
+                        </div>
+
+
+                        <h3>
+
+                            📚 ${lecture.subject}
+
+                        </h3>
+
+
+                        <div class="lecture-info">
+
+                            <span>
+                                🏫 ${lecture.room}
+                            </span>
+
+                            <span>
+                                👨‍🏫 ${lecture.professor}
+                            </span>
+
+                        </div>
+
+                    `;
+
+
+                    lectureContainer.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+        })
+
+
+        .catch(error => {
+
+            console.error(error);
+
+
+            lectureContainer.innerHTML = `
+
+                <div class="empty-box">
+
+                    <h2>
+                        ⚠️ Something went wrong
+                    </h2>
+
+                    <p>
+                        Unable to load today's lectures.
+                    </p>
+
+                </div>
+
+            `;
+
+        });
+
+}
+
+
+/* =====================================================
+   TIME CONVERTER
+===================================================== */
+
+function convertTime(time) {
+
+    if (!time) return 0;
+
+
+    let value =
+        time.toString()
+            .trim()
+            .toUpperCase();
+
+
+    let match =
+        value.match(
+            /(\d{1,2}):(\d{2})\s*(AM|PM)?/
+        );
+
+
+    if (!match) return 0;
+
+
+    let hour =
+        parseInt(match[1]);
+
+
+    let minute =
+        parseInt(match[2]);
+
+
+    let period =
+        match[3];
+
+
+    if (
+        period === "PM"
+        &&
+        hour !== 12
+    ) {
+
+        hour += 12;
+
+    }
+
+
+    if (
+        period === "AM"
+        &&
+        hour === 12
+    ) {
+
+        hour = 0;
+
+    }
+
+
+    return hour * 60 + minute;
+
+}
+
+
+/* =====================================================
+   FORMAT TIME
+===================================================== */
+
+function formatTime(time) {
+
+    if (!time) return "";
+
+
+    let value =
+        time.toString()
+            .trim()
+            .toUpperCase();
+
+
+    let match =
+        value.match(
+            /(\d{1,2}):(\d{2})\s*(AM|PM)?/
+        );
+
+
+    if (!match) return time;
+
+
+    let hour =
+        parseInt(match[1]);
+
+
+    let minute =
+        match[2];
+
+
+    let period =
+        match[3];
+
+
+    if (!period) {
+
+        period =
+            hour >= 12
+            ? "PM"
+            : "AM";
+
+
+        if (hour === 0) {
+
+            hour = 12;
+
+        }
+
+        else if (hour > 12) {
+
+            hour -= 12;
+
+        }
+
+    }
+
+
+    return `${hour}:${minute} ${period}`;
+
+}
+
+
+/* =====================================================
+   AUTO REFRESH EVERY 30 SECONDS
+===================================================== */
+
+setInterval(
+    loadTodayLectures,
+    30000
+);
+
+</script>
+
+</body>
+
+</html>

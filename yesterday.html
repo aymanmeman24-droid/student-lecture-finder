@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Yesterday's Lectures</title>
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="page-header">
+
+        <div class="header-left">
+
+            <a href="/today.html" class="back-btn">
+                ← Today
+            </a>
+
+            <div class="page-title">
+
+                <h1>Yesterday's Lectures 📚</h1>
+
+                <p id="yesterdayDate"></p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- LECTURES -->
+    <div id="lectureContainer">
+
+        <div class="message">
+
+            <h3>Loading... ⏳</h3>
+
+            <p>
+                Finding yesterday's lectures.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- NAVIGATION -->
+    <div class="bottom-nav">
+
+        <a href="/today.html" class="nav-card">
+            📅 Today
+        </a>
+
+        <a href="/timetable.html" class="nav-card">
+            📚 Full Timetable
+        </a>
+
+        <a href="/tomorrow.html" class="nav-card">
+            Tomorrow →
+        </a>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const enrollment =
+    localStorage.getItem("enrollment");
+
+
+const lectureContainer =
+    document.getElementById("lectureContainer");
+
+
+const yesterdayDate =
+    document.getElementById("yesterdayDate");
+
+
+/* =========================
+   DAYS & MONTHS
+========================= */
+
+const days = [
+
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+
+];
+
+
+const months = [
+
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+
+];
+
+
+/* =========================
+   YESTERDAY DATE
+========================= */
+
+const today =
+    new Date();
+
+
+const yesterday =
+    new Date(today);
+
+
+yesterday.setDate(
+    today.getDate() - 1
+);
+
+
+const yesterdayDay =
+    days[yesterday.getDay()];
+
+
+yesterdayDate.textContent =
+
+    `${yesterdayDay} • ${yesterday.getDate()} ${months[yesterday.getMonth()]} ${yesterday.getFullYear()}`;
+
+
+/* =========================
+   TIME CONVERTER
+========================= */
+
+function timeToMinutes(time) {
+
+    const parts =
+        time.split(":");
+
+
+    return (
+
+        parseInt(parts[0]) * 60 +
+
+        parseInt(parts[1])
+
+    );
+
+}
+
+
+/* =========================
+   LOAD LECTURES
+========================= */
+
+async function loadYesterdayLectures() {
+
+
+    if (!enrollment) {
+
+        lectureContainer.innerHTML = `
+
+            <div class="message">
+
+                <h3>
+                    Enrollment not found ⚠️
+                </h3>
+
+                <p>
+                    Please enter your enrollment number first.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    try {
+
+
+        const response =
+
+            await fetch(
+                `/api/lectures/${enrollment}`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        /* INVALID ENROLLMENT */
+
+        if (!data.success) {
+
+            lectureContainer.innerHTML = `
+
+                <div class="message">
+
+                    <h3>
+                        Enrollment not found ⚠️
+                    </h3>
+
+                    <p>
+                        Please check your enrollment number.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        /* FILTER YESTERDAY */
+
+        let lectures =
+
+            data.lectures.filter(
+
+                lecture =>
+
+                    lecture.day.toLowerCase() ===
+
+                    yesterdayDay.toLowerCase()
+
+            );
+
+
+        /* SORT BY TIME */
+
+        lectures.sort(
+
+            (a, b) =>
+
+                timeToMinutes(a.start_time) -
+
+                timeToMinutes(b.start_time)
+
+        );
+
+
+        /* NO LECTURES */
+
+        if (lectures.length === 0) {
+
+            lectureContainer.innerHTML = `
+
+                <div class="message">
+
+                    <h3>
+                        No lectures 📭
+                    </h3>
+
+                    <p>
+                        No lectures were scheduled yesterday.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        /* DISPLAY */
+
+        lectureContainer.innerHTML =
+
+            lectures.map(
+
+                lecture => `
+
+                    <div class="lecture-card">
+
+
+                        <div class="lecture-top">
+
+
+                            <div class="subject">
+
+                                📚 ${lecture.subject}
+
+                            </div>
+
+
+                            <div class="time">
+
+                                ⏰ ${lecture.start_time}
+                                -
+                                ${lecture.end_time}
+
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="lecture-info">
+
+
+                            <div class="info-box">
+
+                                <span class="info-label">
+
+                                    🏫 ROOM
+
+                                </span>
+
+
+                                <span class="info-value">
+
+                                    ${lecture.room}
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="info-box">
+
+                                <span class="info-label">
+
+                                    👨‍🏫 PROFESSOR
+
+                                </span>
+
+
+                                <span class="info-value">
+
+                                    ${lecture.professor}
+
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+                `
+
+            ).join("");
+
+
+    }
+
+
+    catch (error) {
+
+
+        console.error(error);
+
+
+        lectureContainer.innerHTML = `
+
+            <div class="message">
+
+                <h3>
+                    Something went wrong ⚠️
+                </h3>
+
+                <p>
+                    Unable to load yesterday's lectures.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* START */
+
+loadYesterdayLectures();
+
+</script>
+
+</body>
+
+</html>
