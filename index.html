@@ -12,17 +12,17 @@
     <style>
 
         /* =====================================
-           MODERN HOME PAGE
+           HOME PAGE
         ===================================== */
 
         .home-page {
-            min-height: calc(100vh - 90px);
+            min-height: 100vh;
 
             display: flex;
             align-items: center;
             justify-content: center;
 
-            padding: 30px 15px;
+            padding: 35px 15px;
         }
 
 
@@ -39,7 +39,9 @@
         }
 
 
-        /* LEFT SIDE */
+        /* =====================================
+           LEFT SIDE
+        ===================================== */
 
         .hero-content {
             padding: 20px;
@@ -125,7 +127,9 @@
         }
 
 
-        /* RIGHT SIDE */
+        /* =====================================
+           RIGHT SIDE
+        ===================================== */
 
         .enrollment-card {
             background: rgba(255,255,255,0.96);
@@ -235,6 +239,8 @@
         .modern-input {
             width: 100%;
 
+            box-sizing: border-box;
+
             padding: 15px 16px;
 
             border-radius: 13px;
@@ -250,6 +256,8 @@
             transition: 0.25s;
 
             margin-bottom: 15px;
+
+            text-transform: uppercase;
         }
 
 
@@ -299,6 +307,28 @@
 
             box-shadow:
                 0 12px 28px rgba(79,70,229,0.30);
+        }
+
+
+        .find-btn:disabled {
+            opacity: 0.7;
+
+            cursor: not-allowed;
+
+            transform: none;
+        }
+
+
+        #message {
+            min-height: 20px;
+
+            margin: 12px 0 0;
+
+            text-align: center;
+
+            font-size: 13px;
+
+            font-weight: 700;
         }
 
 
@@ -401,24 +431,15 @@
 
 <body>
 
-    <header>
-
-        <div>
-            <h1>🎓 Student Lecture Finder</h1>
-            <p>Find your lecture instantly</p>
-        </div>
-
-    </header>
-
 
     <main class="home-page">
 
         <div class="home-container">
 
 
-            <!-- ==============================
+            <!-- =================================
                  LEFT HERO
-            =============================== -->
+            ================================== -->
 
             <section class="hero-content">
 
@@ -428,8 +449,10 @@
 
 
                 <h2>
+
                     Find Your
                     <span>Lecture.</span>
+
                 </h2>
 
 
@@ -466,14 +489,14 @@
             </section>
 
 
-
-            <!-- ==============================
+            <!-- =================================
                  ENROLLMENT CARD
-            =============================== -->
+            ================================== -->
 
             <section class="enrollment-card">
 
                 <div class="card-content">
+
 
                     <div class="card-icon">
                         🔍
@@ -508,6 +531,8 @@
                         class="modern-input"
                         placeholder="e.g. CE01"
                         maxlength="10"
+                        autocomplete="off"
+                        spellcheck="false"
                     >
 
 
@@ -533,6 +558,7 @@
 
                     </p>
 
+
                 </div>
 
             </section>
@@ -542,8 +568,6 @@
 
     </main>
 
-
-    <!-- Existing functionality stays exactly the same -->
 
     <script src="/script.js"></script>
 

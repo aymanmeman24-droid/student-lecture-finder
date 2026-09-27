@@ -1,46 +1,290 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Full Timetable 📚</title>
+<title>Full Timetable | Student Lecture Finder</title>
 
-    <link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/style.css">
+
+<style>
+.timetable-page{
+    max-width:1000px;
+    margin:auto;
+    padding:24px 18px 40px;
+}
+
+.top-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.brand-title{
+    margin:0;
+    font-size:30px;
+    font-weight:800;
+}
+
+.brand-subtitle{
+    margin:5px 0 0;
+    color:#6b7280;
+    font-size:14px;
+}
+
+.change-btn{
+    border:none;
+    padding:10px 15px;
+    border-radius:12px;
+    background:#111827;
+    color:white;
+    cursor:pointer;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+.page-navigation{
+    margin-bottom:22px;
+}
+
+.nav-btn{
+    border:1px solid #e5e7eb;
+    background:white;
+    color:#111827;
+    padding:11px 18px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:700;
+    font-size:13px;
+}
+
+.student-card{
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:24px;
+}
+
+.student-name{
+    font-size:20px;
+    font-weight:800;
+    margin-bottom:6px;
+}
+
+.student-meta{
+    color:#6b7280;
+    font-size:14px;
+}
+
+.heading{
+    margin-bottom:20px;
+}
+
+.heading h2{
+    margin:0;
+    font-size:24px;
+    font-weight:800;
+}
+
+.heading p{
+    margin:5px 0 0;
+    color:#6b7280;
+    font-size:14px;
+}
+
+.day-section{
+    margin-bottom:28px;
+}
+
+.day-title{
+    font-size:18px;
+    font-weight:800;
+    margin:0 0 12px;
+}
+
+.day-list{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+}
+
+.lecture-card{
+    display:grid;
+    grid-template-columns:100px minmax(0,1fr);
+    align-items:center;
+    gap:14px;
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:15px;
+    padding:14px;
+}
+
+.lecture-time{
+    font-size:13px;
+    font-weight:800;
+}
+
+.lecture-end{
+    color:#9ca3af;
+    font-size:11px;
+    margin-top:3px;
+}
+
+.lecture-subject{
+    font-size:15px;
+    font-weight:800;
+}
+
+.lecture-info{
+    color:#6b7280;
+    font-size:11px;
+    margin-top:5px;
+}
+
+.empty-day{
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    padding:15px;
+    color:#9ca3af;
+    font-size:13px;
+}
+
+.message-box{
+    text-align:center;
+    padding:25px;
+    color:#6b7280;
+}
+
+@media(max-width:600px){
+
+    .timetable-page{
+        padding:18px 13px 35px;
+    }
+
+    .top-header{
+        align-items:flex-start;
+    }
+
+    .brand-title{
+        font-size:24px;
+    }
+
+    .change-btn{
+        padding:9px 10px;
+        font-size:11px;
+    }
+
+    .student-card{
+        padding:15px;
+    }
+
+    .student-name{
+        font-size:18px;
+    }
+
+    .lecture-card{
+        grid-template-columns:75px minmax(0,1fr);
+    }
+}
+</style>
 </head>
 
 <body>
 
-<div class="page-container">
+<div class="timetable-page">
 
-    <!-- Header -->
-    <div class="simple-page-header">
+    <!-- HEADER -->
 
-        <a href="/today.html" class="back-btn">
+    <div class="top-header">
+
+        <div>
+
+            <h1 class="brand-title">
+                Full Timetable 📅
+            </h1>
+
+            <p class="brand-subtitle">
+                Student Lecture Finder
+            </p>
+
+        </div>
+
+        <button class="change-btn"
+                onclick="changeEnrollment()">
+
+            🔄 Change Enrollment
+
+        </button>
+
+    </div>
+
+
+    <!-- BACK TO TODAY -->
+
+    <div class="page-navigation">
+
+        <button class="nav-btn"
+                onclick="window.location.href='/today.html'">
+
             ← Back to Today
-        </a>
 
-        <h1>📚 Full Timetable</h1>
+        </button>
+
+    </div>
+
+
+    <!-- STUDENT -->
+
+    <div class="student-card">
+
+        <div class="student-name"
+             id="studentName">
+
+            Loading...
+
+        </div>
+
+        <div class="student-meta">
+
+            🎓 <strong id="studentEnrollment">
+                Loading...
+            </strong>
+
+            &nbsp; • &nbsp;
+
+            🧑‍💻 <strong id="studentBatch">
+                Loading...
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- HEADING -->
+
+    <div class="heading">
+
+        <h2>WEEKLY TIMETABLE</h2>
 
         <p>
-            Complete weekly lecture schedule
+            Complete lecture schedule for your batch
         </p>
 
     </div>
 
 
-    <!-- Student -->
-    <div class="enrollment-info">
-        🎓 Enrollment:
-        <strong id="studentEnrollment">Loading...</strong>
-    </div>
+    <!-- TIMETABLE -->
 
-
-    <!-- Timetable -->
     <div id="timetableContainer">
 
-        <div class="loading-box">
-            ⏳ Loading timetable...
+        <div class="message-box">
+            Loading timetable...
         </div>
 
     </div>
@@ -50,323 +294,330 @@
 
 <script>
 
-const enrollment = localStorage.getItem("enrollment");
+const enrollment =
+    localStorage.getItem("enrollment");
 
-const container =
-    document.getElementById("timetableContainer");
+const studentName =
+    document.getElementById("studentName");
 
 const studentEnrollment =
     document.getElementById("studentEnrollment");
 
+const studentBatch =
+    document.getElementById("studentBatch");
 
-const days = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday"
-];
+const timetableContainer =
+    document.getElementById("timetableContainer");
 
 
-// -------------------------------
-// Convert time into minutes
-// -------------------------------
+/* CHANGE ENROLLMENT */
 
-function convertTime(time) {
+function changeEnrollment(){
 
-    if (!time) return 0;
+    localStorage.removeItem("enrollment");
+    localStorage.removeItem("studentName");
+    localStorage.removeItem("studentBatch");
 
-    let value = time.toString()
-        .trim()
-        .toUpperCase();
+    window.location.href="/";
 
-    let match =
-        value.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/);
-
-    if (!match) return 0;
-
-    let hour = parseInt(match[1]);
-    let minute = parseInt(match[2]);
-    let period = match[3];
-
-    if (period === "PM" && hour !== 12) {
-        hour += 12;
-    }
-
-    if (period === "AM" && hour === 12) {
-        hour = 0;
-    }
-
-    return hour * 60 + minute;
 }
 
 
-// -------------------------------
-// Format time
-// -------------------------------
+/* CHECK ENROLLMENT */
 
-function formatTime(time) {
+if(!enrollment){
 
-    if (!time) return "";
+    studentName.textContent =
+        "Student";
 
-    let value = time.toString()
-        .trim()
-        .toUpperCase();
+    studentEnrollment.textContent =
+        "Not found";
 
-    let match =
-        value.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/);
+    studentBatch.textContent =
+        "—";
 
-    if (!match) return time;
+    timetableContainer.innerHTML = `
 
-    let hour = parseInt(match[1]);
-    let minute = match[2];
-    let period = match[3];
+        <div class="message-box">
 
-    if (!period) {
+            ⚠️ Enrollment number not found.
 
-        period =
-            hour >= 12 ? "PM" : "AM";
+            <br><br>
 
-        if (hour === 0) {
-            hour = 12;
-        }
-        else if (hour > 12) {
-            hour -= 12;
-        }
-    }
-
-    return `${hour}:${minute} ${period}`;
-}
-
-
-// -------------------------------
-// No enrollment
-// -------------------------------
-
-if (!enrollment) {
-
-    container.innerHTML = `
-
-        <div class="empty-box">
-
-            <h2>⚠️ Enrollment Number Missing</h2>
-
-            <p>
-                Please enter your enrollment number first.
-            </p>
-
-            <a href="/" class="primary-btn">
-                Go to Home
-            </a>
+            Please enter your enrollment number.
 
         </div>
 
     `;
 
+}else{
+
+    studentEnrollment.textContent =
+        enrollment;
+
+    loadTimetable();
+
 }
 
 
-// -------------------------------
-// Load timetable
-// -------------------------------
+/* LOAD TIMETABLE */
 
-else {
+function loadTimetable(){
 
-    studentEnrollment.textContent = enrollment;
+    fetch(
+        `/api/lectures/${encodeURIComponent(enrollment)}`
+    )
 
-    fetch(`/api/lectures/${enrollment}`)
+    .then(response =>
+        response.json()
+    )
 
-        .then(response => response.json())
+    .then(data => {
 
-        .then(data => {
+        if(!data.success){
 
-            if (!data.success) {
+            timetableContainer.innerHTML = `
 
-                container.innerHTML = `
+                <div class="message-box">
 
-                    <div class="empty-box">
-
-                        <h2>❌ Student Not Found</h2>
-
-                        <p>
-                            ${data.message}
-                        </p>
-
-                    </div>
-
-                `;
-
-                return;
-            }
-
-
-            const lectures =
-                data.lectures || [];
-
-            container.innerHTML = "";
-
-
-            // -------------------------------
-            // Every day
-            // -------------------------------
-
-            days.forEach(day => {
-
-
-                // Get lectures of this day
-                const dayLectures = lectures
-
-                    .filter(
-                        lecture =>
-                            lecture.day === day
-                    )
-
-                    // IMPORTANT:
-                    // Sort according to time
-                    .sort(
-                        (a, b) =>
-                            convertTime(a.start_time)
-                            -
-                            convertTime(b.start_time)
-                    );
-
-
-                // -------------------------------
-                // Day heading
-                // -------------------------------
-
-                const daySection =
-                    document.createElement("div");
-
-                daySection.className =
-                    "timetable-section";
-
-
-                daySection.innerHTML = `
-
-                    <div class="timetable-day-title">
-
-                        <h2>
-                            📅 ${day}
-                        </h2>
-
-                    </div>
-
-                `;
-
-
-                // -------------------------------
-                // No lecture
-                // -------------------------------
-
-                if (dayLectures.length === 0) {
-
-                    daySection.innerHTML += `
-
-                        <div class="no-lecture-card">
-
-                            💤 No lectures scheduled
-
-                        </div>
-
-                    `;
-
-                }
-
-
-                // -------------------------------
-                // Lecture cards
-                // -------------------------------
-
-                else {
-
-                    dayLectures.forEach(
-                        lecture => {
-
-                            const card =
-                                document.createElement("div");
-
-                            card.className =
-                                "lecture-card";
-
-
-                            card.innerHTML = `
-
-                                <div class="lecture-time">
-
-                                    ⏰
-
-                                    <strong>
-                                        ${formatTime(
-                                            lecture.start_time
-                                        )}
-                                        -
-                                        ${formatTime(
-                                            lecture.end_time
-                                        )}
-                                    </strong>
-
-                                </div>
-
-
-                                <h3>
-                                    📚 ${lecture.subject}
-                                </h3>
-
-
-                                <div class="lecture-info">
-
-                                    <span>
-                                        🏫 ${lecture.room}
-                                    </span>
-
-                                    <span>
-                                        👨‍🏫 ${lecture.professor}
-                                    </span>
-
-                                </div>
-
-                            `;
-
-
-                            daySection.appendChild(card);
-
-                        }
-                    );
-
-                }
-
-
-                container.appendChild(daySection);
-
-            });
-
-        })
-
-
-        .catch(error => {
-
-            console.error(error);
-
-            container.innerHTML = `
-
-                <div class="empty-box">
-
-                    <h2>
-                        ⚠️ Something went wrong
-                    </h2>
-
-                    <p>
-                        Unable to load timetable.
-                    </p>
+                    ❌ Enrollment number not found.
 
                 </div>
 
             `;
 
+            return;
+
+        }
+
+
+        /* STUDENT */
+
+        if(data.student){
+
+            studentName.textContent =
+                data.student.name || "Student";
+
+            studentBatch.textContent =
+                data.student.batch || "—";
+
+            localStorage.setItem(
+                "studentName",
+                data.student.name || ""
+            );
+
+            localStorage.setItem(
+                "studentBatch",
+                data.student.batch || ""
+            );
+
+        }
+
+
+        const lectures =
+            data.lectures || [];
+
+
+        const days = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+        ];
+
+
+        timetableContainer.innerHTML = "";
+
+
+        days.forEach(day => {
+
+            const dayLectures =
+                lectures
+                .filter(
+                    lecture =>
+                        lecture.day === day
+                )
+                .sort(
+                    (a,b) =>
+                        convertTime(a.start_time)
+                        -
+                        convertTime(b.start_time)
+                );
+
+
+            const section =
+                document.createElement("div");
+
+            section.className =
+                "day-section";
+
+
+            let cards = "";
+
+
+            if(dayLectures.length === 0){
+
+                cards = `
+
+                    <div class="empty-day">
+
+                        📭 No lectures scheduled
+
+                    </div>
+
+                `;
+
+            }else{
+
+                dayLectures.forEach(
+                    lecture => {
+
+                        cards += `
+
+                            <div class="lecture-card">
+
+                                <div>
+
+                                    <div class="lecture-time">
+
+                                        ${lecture.start_time}
+
+                                    </div>
+
+                                    <div class="lecture-end">
+
+                                        ${lecture.end_time}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div>
+
+                                    <div class="lecture-subject">
+
+                                        ${lecture.subject}
+
+                                    </div>
+
+                                    <div class="lecture-info">
+
+                                        👨‍🏫 ${lecture.professor}
+
+                                        &nbsp; • &nbsp;
+
+                                        🚪 Room ${lecture.room}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    }
+                );
+
+            }
+
+
+            section.innerHTML = `
+
+                <h3 class="day-title">
+                    ${day}
+                </h3>
+
+                <div class="day-list">
+
+                    ${cards}
+
+                </div>
+
+            `;
+
+
+            timetableContainer.appendChild(
+                section
+            );
+
         });
+
+    })
+
+
+    .catch(error => {
+
+        console.error(
+            "Timetable loading error:",
+            error
+        );
+
+        timetableContainer.innerHTML = `
+
+            <div class="message-box">
+
+                ⚠️ Unable to load timetable.
+
+                <br><br>
+
+                Please make sure the Flask
+                server is running.
+
+            </div>
+
+        `;
+
+    });
+
+}
+
+
+/* TIME CONVERTER */
+
+function convertTime(timeString){
+
+    if(!timeString)
+        return 0;
+
+    const parts =
+        timeString.trim().split(" ");
+
+    const time =
+        parts[0];
+
+    const modifier =
+        parts[1];
+
+    let [hours,minutes] =
+        time.split(":").map(Number);
+
+
+    if(
+        modifier === "PM" &&
+        hours !== 12
+    ){
+
+        hours += 12;
+
+    }
+
+
+    if(
+        modifier === "AM" &&
+        hours === 12
+    ){
+
+        hours = 0;
+
+    }
+
+
+    return hours * 60 + minutes;
 
 }
 

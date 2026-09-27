@@ -1,71 +1,340 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Tomorrow's Lectures</title>
+<title>Tomorrow | Student Lecture Finder</title>
 
-    <link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/style.css">
+
+<style>
+.tomorrow-page{
+    max-width:900px;
+    margin:auto;
+    padding:24px 18px 40px;
+}
+
+.top-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.brand-title{
+    margin:0;
+    font-size:30px;
+    font-weight:800;
+}
+
+.brand-subtitle{
+    margin:5px 0 0;
+    color:#6b7280;
+    font-size:14px;
+}
+
+.change-btn{
+    border:none;
+    padding:10px 15px;
+    border-radius:12px;
+    background:#111827;
+    color:white;
+    cursor:pointer;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+.page-navigation{
+    margin-bottom:22px;
+}
+
+.nav-btn{
+    border:1px solid #e5e7eb;
+    background:white;
+    color:#111827;
+    padding:11px 18px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:700;
+    font-size:13px;
+}
+
+.student-card{
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:24px;
+}
+
+.student-name{
+    font-size:20px;
+    font-weight:800;
+    margin-bottom:6px;
+}
+
+.student-meta{
+    color:#6b7280;
+    font-size:14px;
+}
+
+.day-heading{
+    margin-bottom:18px;
+}
+
+.day-heading h2{
+    margin:0;
+    font-size:24px;
+    font-weight:800;
+}
+
+.day-heading p{
+    margin:5px 0 0;
+    color:#6b7280;
+    font-size:14px;
+}
+
+.stats-row{
+    display:grid;
+    grid-template-columns:1fr;
+    border-top:1px solid #e5e7eb;
+    border-bottom:1px solid #e5e7eb;
+    margin:18px 0 24px;
+}
+
+.stat-box{
+    text-align:center;
+    padding:14px 8px;
+}
+
+.stat-label{
+    display:block;
+    font-size:12px;
+    color:#6b7280;
+    font-weight:700;
+    margin-bottom:4px;
+}
+
+.stat-number{
+    display:block;
+    font-size:25px;
+    font-weight:800;
+}
+
+.schedule-title{
+    margin:0 0 13px;
+    font-size:19px;
+    font-weight:800;
+}
+
+.schedule-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.lecture-card{
+    display:grid;
+    grid-template-columns:95px minmax(0,1fr) auto;
+    align-items:center;
+    gap:12px;
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:15px;
+    padding:14px;
+}
+
+.lecture-time{
+    font-size:13px;
+    font-weight:800;
+}
+
+.lecture-end-time{
+    color:#9ca3af;
+    font-size:11px;
+    margin-top:3px;
+}
+
+.lecture-subject{
+    font-size:15px;
+    font-weight:800;
+}
+
+.lecture-info{
+    color:#6b7280;
+    font-size:11px;
+    margin-top:5px;
+}
+
+.upcoming{
+    color:#2563eb;
+    font-size:10px;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.message-box{
+    text-align:center;
+    padding:25px;
+    color:#6b7280;
+}
+
+@media(max-width:600px){
+
+    .tomorrow-page{
+        padding:18px 13px 35px;
+    }
+
+    .top-header{
+        align-items:flex-start;
+    }
+
+    .brand-title{
+        font-size:24px;
+    }
+
+    .change-btn{
+        padding:9px 10px;
+        font-size:11px;
+    }
+
+    .student-card{
+        padding:15px;
+    }
+
+    .student-name{
+        font-size:18px;
+    }
+
+    .lecture-card{
+        grid-template-columns:72px minmax(0,1fr);
+    }
+
+    .upcoming{
+        grid-column:2;
+    }
+}
+</style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="tomorrow-page">
 
-    <!-- HEADER -->
-    <div class="page-header">
+    <div class="top-header">
 
-        <div class="header-left">
+        <div>
 
-            <a href="/today.html" class="back-btn">
-                ← Today
-            </a>
+            <h1 class="brand-title">
+                Tomorrow's Lectures 📚
+            </h1>
 
-            <div class="page-title">
-
-                <h1>Tomorrow's Lectures 📚</h1>
-
-                <p id="tomorrowDate"></p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- LECTURES -->
-    <div id="lectureContainer">
-
-        <div class="message">
-
-            <h3>Loading... ⏳</h3>
-
-            <p>
-                Finding tomorrow's lectures.
+            <p class="brand-subtitle">
+                Student Lecture Finder
             </p>
 
         </div>
 
+        <button class="change-btn"
+                onclick="changeEnrollment()">
+
+            🔄 Change Enrollment
+
+        </button>
+
     </div>
 
 
-    <!-- NAVIGATION -->
-    <div class="bottom-nav">
+    <!-- BACK TO TODAY -->
 
-        <a href="/yesterday.html" class="nav-card">
-            ← Yesterday
-        </a>
+    <div class="page-navigation">
 
-        <a href="/today.html" class="nav-card">
-            📅 Today
-        </a>
+        <button class="nav-btn"
+                onclick="window.location.href='/today.html'">
 
-        <a href="/timetable.html" class="nav-card">
-            📚 Full Timetable
-        </a>
+            ← Back to Today
+
+        </button>
+
+    </div>
+
+
+    <!-- STUDENT -->
+
+    <div class="student-card">
+
+        <div class="student-name"
+             id="studentName">
+
+            Loading...
+
+        </div>
+
+        <div class="student-meta">
+
+            🎓 <strong id="studentEnrollment">
+                Loading...
+            </strong>
+
+            &nbsp; • &nbsp;
+
+            🧑‍💻 <strong id="studentBatch">
+                Loading...
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- DAY -->
+
+    <div class="day-heading">
+
+        <h2>TOMORROW</h2>
+
+        <p id="tomorrowDate">
+            Loading date...
+        </p>
+
+    </div>
+
+
+    <!-- TOTAL -->
+
+    <div class="stats-row">
+
+        <div class="stat-box">
+
+            <span class="stat-label">
+                📚 TOTAL LECTURES
+            </span>
+
+            <span class="stat-number"
+                  id="totalLectures">
+
+                0
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <h3 class="schedule-title">
+        Tomorrow's Schedule
+    </h3>
+
+
+    <div id="lectureContainer"
+         class="schedule-list">
+
+        <div class="message-box">
+            Loading lectures...
+        </div>
 
     </div>
 
@@ -77,156 +346,114 @@
 const enrollment =
     localStorage.getItem("enrollment");
 
+const studentName =
+    document.getElementById("studentName");
+
+const studentEnrollment =
+    document.getElementById("studentEnrollment");
+
+const studentBatch =
+    document.getElementById("studentBatch");
+
+const totalLectures =
+    document.getElementById("totalLectures");
+
+const tomorrowDate =
+    document.getElementById("tomorrowDate");
 
 const lectureContainer =
     document.getElementById("lectureContainer");
 
 
-const tomorrowDate =
-    document.getElementById("tomorrowDate");
+function changeEnrollment(){
 
+    localStorage.removeItem("enrollment");
+    localStorage.removeItem("studentName");
+    localStorage.removeItem("studentBatch");
 
-/* =========================
-   DAYS & MONTHS
-========================= */
-
-const days = [
-
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday"
-
-];
-
-
-const months = [
-
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-
-];
-
-
-/* =========================
-   TOMORROW DATE
-========================= */
-
-const today =
-    new Date();
-
-
-const tomorrow =
-    new Date(today);
-
-
-tomorrow.setDate(
-    today.getDate() + 1
-);
-
-
-const tomorrowDay =
-    days[tomorrow.getDay()];
-
-
-tomorrowDate.textContent =
-
-    `${tomorrowDay} • ${tomorrow.getDate()} ${months[tomorrow.getMonth()]} ${tomorrow.getFullYear()}`;
-
-
-/* =========================
-   TIME CONVERTER
-========================= */
-
-function timeToMinutes(time) {
-
-    const parts =
-        time.split(":");
-
-
-    return (
-
-        parseInt(parts[0]) * 60 +
-
-        parseInt(parts[1])
-
-    );
+    window.location.href="/";
 
 }
 
 
-/* =========================
-   LOAD LECTURES
-========================= */
+/* TOMORROW DATE */
 
-async function loadTomorrowLectures() {
+const tomorrow = new Date();
 
+tomorrow.setDate(
+    tomorrow.getDate() + 1
+);
 
-    if (!enrollment) {
-
-        lectureContainer.innerHTML = `
-
-            <div class="message">
-
-                <h3>
-                    Enrollment not found ⚠️
-                </h3>
-
-                <p>
-                    Please enter your enrollment number first.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
+tomorrowDate.textContent =
+    tomorrow.toLocaleDateString(
+        "en-IN",
+        {
+            weekday:"long",
+            day:"numeric",
+            month:"long",
+            year:"numeric"
+        }
+    );
 
 
-    try {
+/* CHECK */
+
+if(!enrollment){
+
+    studentEnrollment.textContent =
+        "Not found";
+
+    studentName.textContent =
+        "Student";
+
+    studentBatch.textContent =
+        "—";
+
+    lectureContainer.innerHTML = `
+
+        <div class="message-box">
+
+            ⚠️ Enrollment number not found.
+
+            <br><br>
+
+            Please enter your enrollment number.
+
+        </div>
+
+    `;
+
+}else{
+
+    studentEnrollment.textContent =
+        enrollment;
+
+    loadTomorrowLectures();
+
+}
 
 
-        const response =
+/* LOAD */
 
-            await fetch(
-                `/api/lectures/${enrollment}`
-            );
+function loadTomorrowLectures(){
 
+    fetch(
+        `/api/lectures/${encodeURIComponent(enrollment)}`
+    )
 
-        const data =
-            await response.json();
+    .then(response =>
+        response.json()
+    )
 
+    .then(data => {
 
-        /* INVALID ENROLLMENT */
-
-        if (!data.success) {
+        if(!data.success){
 
             lectureContainer.innerHTML = `
 
-                <div class="message">
+                <div class="message-box">
 
-                    <h3>
-                        Enrollment not found ⚠️
-                    </h3>
-
-                    <p>
-                        Please check your enrollment number.
-                    </p>
+                    ❌ Enrollment number not found.
 
                 </div>
 
@@ -237,49 +464,69 @@ async function loadTomorrowLectures() {
         }
 
 
-        /* FILTER TOMORROW */
+        if(data.student){
 
-        let lectures =
+            studentName.textContent =
+                data.student.name || "Student";
 
-            data.lectures.filter(
+            studentBatch.textContent =
+                data.student.batch || "—";
 
-                lecture =>
+            localStorage.setItem(
+                "studentName",
+                data.student.name || ""
+            );
 
-                    lecture.day.toLowerCase() ===
+            localStorage.setItem(
+                "studentBatch",
+                data.student.batch || ""
+            );
 
-                    tomorrowDay.toLowerCase()
+        }
 
+
+        const tomorrowDay =
+            tomorrow.toLocaleDateString(
+                "en-US",
+                {
+                    weekday:"long"
+                }
             );
 
 
-        /* SORT BY TIME */
+        const tomorrowLectures =
+            (data.lectures || [])
+            .filter(
+                lecture =>
+                    lecture.day === tomorrowDay
+            );
 
-        lectures.sort(
 
-            (a, b) =>
-
-                timeToMinutes(a.start_time) -
-
-                timeToMinutes(b.start_time)
-
+        tomorrowLectures.sort(
+            (a,b) =>
+                convertTime(a.start_time)
+                -
+                convertTime(b.start_time)
         );
 
 
-        /* NO LECTURES */
+        totalLectures.textContent =
+            tomorrowLectures.length;
 
-        if (lectures.length === 0) {
+
+        if(tomorrowLectures.length === 0){
 
             lectureContainer.innerHTML = `
 
-                <div class="message">
+                <div class="message-box">
 
-                    <h3>
-                        No lectures 🎉
-                    </h3>
+                    📭 No lectures are scheduled
+                    for tomorrow.
 
-                    <p>
-                        No lectures are scheduled for tomorrow.
-                    </p>
+                    <br><br>
+
+                    Check the Full Timetable
+                    for more details.
 
                 </div>
 
@@ -290,124 +537,131 @@ async function loadTomorrowLectures() {
         }
 
 
-        /* DISPLAY */
-
-        lectureContainer.innerHTML =
-
-            lectures.map(
-
-                lecture => `
-
-                    <div class="lecture-card">
+        lectureContainer.innerHTML = "";
 
 
-                        <div class="lecture-top">
+        tomorrowLectures.forEach(
+            lecture => {
 
+                const card =
+                    document.createElement("div");
 
-                            <div class="subject">
+                card.className =
+                    "lecture-card";
 
-                                📚 ${lecture.subject}
+                card.innerHTML = `
 
-                            </div>
+                    <div>
 
-
-                            <div class="time">
-
-                                ⏰ ${lecture.start_time}
-                                -
-                                ${lecture.end_time}
-
-                            </div>
-
-
+                        <div class="lecture-time">
+                            ${lecture.start_time}
                         </div>
 
-
-                        <div class="lecture-info">
-
-
-                            <div class="info-box">
-
-                                <span class="info-label">
-
-                                    🏫 ROOM
-
-                                </span>
-
-
-                                <span class="info-value">
-
-                                    ${lecture.room}
-
-                                </span>
-
-                            </div>
-
-
-                            <div class="info-box">
-
-                                <span class="info-label">
-
-                                    👨‍🏫 PROFESSOR
-
-                                </span>
-
-
-                                <span class="info-value">
-
-                                    ${lecture.professor}
-
-                                </span>
-
-                            </div>
-
-
+                        <div class="lecture-end-time">
+                            ${lecture.end_time}
                         </div>
-
 
                     </div>
 
-                `
 
-            ).join("");
+                    <div>
+
+                        <div class="lecture-subject">
+                            ${lecture.subject}
+                        </div>
+
+                        <div class="lecture-info">
+
+                            👨‍🏫 ${lecture.professor}
+
+                            &nbsp; • &nbsp;
+
+                            🚪 Room ${lecture.room}
+
+                        </div>
+
+                    </div>
 
 
-    }
+                    <div class="upcoming">
+                        ⏳ UPCOMING
+                    </div>
 
+                `;
 
-    catch (error) {
+                lectureContainer.appendChild(card);
 
+            }
+        );
 
-        console.error(error);
+    })
 
+    .catch(error => {
+
+        console.error(
+            "Lecture loading error:",
+            error
+        );
 
         lectureContainer.innerHTML = `
 
-            <div class="message">
+            <div class="message-box">
 
-                <h3>
-                    Something went wrong ⚠️
-                </h3>
+                ⚠️ Unable to load lectures.
 
-                <p>
-                    Unable to load tomorrow's lectures.
-                </p>
+                <br><br>
+
+                Please make sure the Flask
+                server is running.
 
             </div>
 
         `;
 
-    }
+    });
 
 }
 
 
-/* START */
+function convertTime(timeString){
 
-loadTomorrowLectures();
+    if(!timeString)
+        return 0;
+
+    const parts =
+        timeString.trim().split(" ");
+
+    const time =
+        parts[0];
+
+    const modifier =
+        parts[1];
+
+    let [hours,minutes] =
+        time.split(":").map(Number);
+
+
+    if(
+        modifier === "PM" &&
+        hours !== 12
+    ){
+        hours += 12;
+    }
+
+
+    if(
+        modifier === "AM" &&
+        hours === 12
+    ){
+        hours = 0;
+    }
+
+
+    return hours * 60 + minutes;
+
+}
 
 </script>
 
 </body>
-
 </html>

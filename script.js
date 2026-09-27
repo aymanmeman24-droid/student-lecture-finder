@@ -24,8 +24,20 @@ function findLectures() {
 
             if (data.success) {
 
-                // Save enrollment for other pages
+                // Save enrollment
                 localStorage.setItem("enrollment", enrollment);
+
+                // Save student name
+                localStorage.setItem(
+                    "studentName",
+                    data.student.name
+                );
+
+                // Save batch
+                localStorage.setItem(
+                    "studentBatch",
+                    data.student.batch
+                );
 
                 message.textContent = "✅ Lectures found!";
                 message.style.color = "#16a34a";
@@ -64,6 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const input = document.getElementById("enrollmentInput");
 
     if (input) {
+
         input.addEventListener("keydown", function (event) {
 
             if (event.key === "Enter") {
@@ -71,6 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
         });
+
     }
 
 });
